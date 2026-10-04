@@ -1,0 +1,25 @@
+#FPGA EPC5 tools
+
+apt-get install git
+apt-get install python3 python3-dev clang cmake libboost-dev \
+                libboost-filesystem-dev libboost-thread-dev \
+                libboost-program-options-dev libboost-iostreams-dev \
+                openocd
+git clone --recursive https://github.com/YosysHQ/prjtrellis
+cd prjtrellis
+cd libtrellis
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/libtrellis .
+make
+make install
+
+#nextpnr
+apt-get install libeigen3-dev
+git clone --recursive https://github.com/YosysHQ/nextpnr
+cd nextpnr
+cmake . -DARCH=ecp5 -DTRELLIS_INSTALL_PREFIX=/opt/trellisc -DCMAKE_INSTALL_PREFIX=/opt/nextpnr-ecp5 .
+make
+make install
+
+
+
+
