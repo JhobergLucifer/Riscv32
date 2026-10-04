@@ -1,0 +1,44 @@
+
+export PATH=$PATH:/usr/bin/
+
+export PATH=$PATH:/opt/nextpnr-ecp5/bin/:/opt/libtrellis/bin/
+
+export PATH=$PATH:/opt/riscv32/bin/
+
+export PATH=$PATH:/opt/yosys/bin 
+
+export PATH=$PATH:/opt/toolchains/or1k-elf/bin/
+
+
+python3 ./muselab_icesugar_pro.py --build --cpu-type vexriscv --csr-csv=csr.csv --output-dir icePro32/
+
+python3 ./muselab_icesugar_pro.py --build --cpu-type rocket --cpu-variant=linux --output-dir icePro64/
+
+python3 ./muselab_icesugar_pro.py --build --cpu-type vexriscv_smp --cpu-variant=linux --output-dir iceProsmp32/
+
+#processor 32 bit, vexriscv_smp, cpu counter, Ncores
+edit 
+/home/lucifer/FPGA-processor/litex/litex/litex/soc/cores/cpu
+list
+/home/lucifer/FPGA-processor/litex/litex/litex/soc/cores/cpu/vexriscv_smp/core.py
+edit
+VexRiscv SMP
+cpu_count            = 4
+
+install java , sbt java apt
+litex path
+./muselab_icesugar_pro.py --build --cpu-type vexriscv_smp --cpu-variant=linux --cpu-count=2 --output-dir riscvsmp32/
+
+#rocket riscv 64 bits linux
+./muselab_icesugar_pro.py --build --cpu-type rocket --cpu-variant=linux --cpu-count=2  --output-dir riscv64/
+
+./xilinx_vcu118.py --build --cpu-type rocket --cpu-variant=linux --cpu-count=2  --output-dir xriscv64/
+
+
+#serial FPGA ecp5
+ecpdap program build/icesugar_pro/gateware/icesugar_pro.bit 
+ecpdap flash write build/icesugar_pro/gateware/icesugar_pro.bit 
+ecpdap scan
+
+picocom -b 38400 /dev/ttyACM0 
+picocom -b 115200 /dev/ttyACM0 
